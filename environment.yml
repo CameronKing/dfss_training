@@ -1,0 +1,21 @@
+name: dfss_training
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - black
+  - flake8
+  - jupyter
+  - jupytext
+  - numpy
+  - openpyxl
+  - pandas
+  - pip
+  - pre-commit
+  - pytest
+  - python=3.9
+  - scipy
+  - seaborn
+  - statsmodels
+  - toolz
+
