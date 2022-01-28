@@ -1,18 +1,12 @@
-from multiprocessing.sharedctypes import Value
-from signal import siginterrupt
 from typing import Optional, Tuple
 
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as sp_stats
 
 
-def pp(
-    dist: sp_stats.rv_continuous,
-    spec_limits: Tuple[float, float]
-) -> float:
+def pp(dist: sp_stats.rv_continuous, spec_limits: Tuple[float, float]) -> float:
     """Calculate the process capability potential of a distribution.
-    
+
     Parameters
     ----------
     dist
@@ -27,8 +21,7 @@ def pp(
 
 
 def ppk(
-    dist: sp_stats.rv_continuous,
-    spec_limits: Tuple[Optional[float], Optional[float]]
+    dist: sp_stats.rv_continuous, spec_limits: Tuple[Optional[float], Optional[float]]
 ) -> Tuple[Optional[float], Optional[float], float]:
     """Calculate the process capability of a given distribution.
 
@@ -61,7 +54,7 @@ def ppk(
         upper_ppk = (spec_limits[1] - median) / upper_range
     else:
         upper_ppk = None
-    
+
     if lower_ppk is None:
         ppk_val = upper_ppk
     elif upper_ppk is None:
@@ -72,11 +65,10 @@ def ppk(
 
 
 def defect_probability(
-    dist: sp_stats.rv_continuous,
-    spec_limits: Tuple[float, float]
+    dist: sp_stats.rv_continuous, spec_limits: Tuple[float, float]
 ) -> Tuple[float, float, float]:
     """Calculate the mass of defects below and above the spec_limits.
-    
+
     Parameters
     ----------
     dist
@@ -93,6 +85,7 @@ def defect_probability(
     lower_end = dist.cdf(spec_limits[0])
     return lower_end, upper_end, lower_end + upper_end
 
+
 def _moving_range(array: np.ndarray) -> np.ndarray:
     """Calculate a moving range"""
     view = np.lib.stride_tricks.sliding_window_view(array, 2)
@@ -101,7 +94,7 @@ def _moving_range(array: np.ndarray) -> np.ndarray:
 
 def calculate_d2(n: int) -> float:
     """Calculate the d2 constant.
-    
+
     Parameters
     ----------
     n
@@ -117,17 +110,13 @@ def calculate_d2(n: int) -> float:
     approx_x_pos = np.geomspace(1e-5, 1e2, 501)
     approx_x = np.concatenate((approx_x_pos[::-1], approx_x_pos))
     cdf_samples = standard_normal.cdf(approx_x)
-    sample_vals = (
-        1.0
-        - (1.0 - cdf_samples) ** n
-        - cdf_samples ** n
-    )
+    sample_vals = 1.0 - (1.0 - cdf_samples) ** n - cdf_samples ** n
     return np.trapz(sample_vals, x=approx_x)
 
 
 def calculate_sigma_within(data: np.ndarray):
     """Calculate the within sample sigma approximation.
-    
+
     Parameters
     ----------
     data
@@ -135,7 +124,7 @@ def calculate_sigma_within(data: np.ndarray):
         row is assumed to be the samples for a logical grouping.
         If of length 1, a 2 element rolling average is used for the
         sub groups.
-    
+
     Returns
     -------
     sigma_within
@@ -157,5 +146,5 @@ def cpk(array, spec_limits):
     median = np.median(array)
     return min(
         (median - spec_limits[0]) / (3 * sigma_within_val),
-        (spec_limits[1] - median) / (3 * sigma_within_val)
+        (spec_limits[1] - median) / (3 * sigma_within_val),
     )
