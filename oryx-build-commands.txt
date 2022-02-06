@@ -1,0 +1,2 @@
+PlatformWithVersion=Python 
+BuildCommands=mamba env create --file environment.yml --prefix ./venv --quiet
